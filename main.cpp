@@ -770,3 +770,154 @@ void XemPhanHoi()
     }
     fclose(file);
 }
+int docFile(TKMK **head)
+{
+    FILE *file = fopen("users.txt", "r");
+    if (!file)
+    {
+        return 0; // Lỗi khi mở file
+    }
+
+    TKMK *newNode, *current;
+    while (!feof(file))
+    {
+        newNode = (TKMK *)malloc(sizeof(TKMK));
+        if (fscanf(file, "%s %s %d\n", newNode->tk, newNode->mk, &newNode->role) != EOF)
+        {
+            newNode->next = NULL;
+            if (*head == NULL)
+            {
+                *head = newNode;
+            }
+            else
+            {
+                current = *head;
+                while (current->next != NULL)
+                {
+                    current = current->next;
+                }
+                current->next = newNode;
+            }
+        }
+    }
+    fclose(file);
+    return 1; // Thành công
+}
+
+// Hàm ghi dữ liệu từ danh sách liên kết vào file
+int ghiFile(TKMK *head)
+{
+    FILE *file = fopen("users.txt", "a");
+    if (!file)
+    {
+        return 0; // Lỗi khi mở file
+    }
+
+    TKMK *current = head;
+    while (current != NULL)
+    {
+        fprintf(file, "%s %s %d\n", current->tk, current->mk, current->role);
+        current = current->next;
+    }
+    fclose(file);
+    return 1; // Thành công
+}
+// Hàm kiểm tra tên tài khoản có tồn tại trong danh sách không
+int kiemTraTonTai(TKMK *head, const char *tk)
+{
+    TKMK *current = head;
+    while (current != NULL)
+    {
+        if (strcmp(current->tk, tk) == 0)
+        {
+            return 1; // Tài khoản đã tồn tại
+        }
+        current = current->next;
+    }
+    return 0; // Tài khoản chưa tồn tại
+}
+
+// Hàm đăng ký tài khoản
+void dangKyTaiKhoan(TKMK **head)
+{
+    TKMK *newNode = (TKMK *)malloc(sizeof(TKMK));
+
+    printf("Nhap ten tai khoan: ");
+    scanf("%s", newNode->tk);
+
+    // Kiểm tra tên tài khoản có tồn tại hay chưa
+    if (kiemTraTonTai(*head, newNode->tk))
+    {
+        printf("Ten tai khoan da ton tai. Vui long chon ten tai khoan khac!\n");
+        free(newNode); // Giải phóng bộ nhớ không sử dụng
+        return;
+    }
+
+    // Nếu tên tài khoản chưa tồn tại, tiếp tục đăng ký
+    printf("Nhap mat khau: ");
+    scanf("%s", newNode->mk);
+    newNode->role = 1;
+
+    newNode->next = NULL;
+
+    // Thêm tài khoản vào danh sách liên kết
+    if (*head == NULL)
+    {
+        *head = newNode;
+    }
+    else
+    {
+        TKMK *current = *head;
+        while (current->next != NULL)
+        {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+
+    // Ghi lại dữ liệu vào file
+    if (!ghiFile(*head))
+    {
+        printf("Khong the ghi file!\n");
+    }
+    else
+    {
+        printf("-Dang ky tai khoan thanh cong!-\n");
+        hieuung("-------------loading------------>");
+    }
+}
+
+// Hàm giải phóng bộ nhớ danh sách liên kết
+void freeList(TKMK *head)
+{
+    TKMK *current = head;
+    while (current != NULL)
+    {
+        TKMK *temp = current;
+        current = current->next;
+        free(temp);
+    }
+}
+int Check(const char *tk, const char *mk, int *role)
+{
+    FILE *file = fopen("users.txt", "r");
+    if (file == NULL)
+    {
+        printf("Khong the mo file users.txt !\n");
+        return 0;
+    }
+    char filetk[50];
+    char filemk[50];
+    int filerole;
+    while (fscanf(file, "%s %s %d", filetk, filemk, &filerole) != EOF)
+    {
+        if (strcmp(tk, filetk) == 0 && strcmp(mk, filemk) == 0)
+        {
+            *role = filerole;
+            fclose(file);
+            return 1;
+        }
+    }
+    fclose(file);
+    return 0;
+}
