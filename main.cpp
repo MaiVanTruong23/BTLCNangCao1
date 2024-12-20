@@ -921,3 +921,487 @@ int Check(const char *tk, const char *mk, int *role)
     fclose(file);
     return 0;
 }
+void XoaMaTro(const char *maTro)
+{
+    FILE *fileThue = fopen("Thue.txt", "r");
+    FILE *tempThue = fopen("TempThue.txt", "w");
+    if (fileThue == NULL || tempThue == NULL)
+    {
+        printf("Loi mo file Thue.txt hoac file tam.\n");
+        if (fileThue)
+            fclose(fileThue);
+        if (tempThue)
+            fclose(tempThue);
+        return;
+    }
+    int foundThue = 0;
+    Thue thue;
+    while (fscanf(fileThue, "%[^,],%[^,],%[^,],%[^,],%d,%d,%d,%d,%d,%[^\n]\n",
+                  thue.MaTro, thue.HoTenKT, thue.Diachitro, thue.SDTKT,
+                  &thue.Dien, &thue.Nuoc, &thue.DichVu, &thue.TienPhong,
+                  &thue.TongTien, thue.TrangThai) == 10)
+    {
+        if (strcmp(thue.MaTro, maTro) != 0)
+        {
+            fprintf(tempThue, "%s,%s,%s,%s,%d,%d,%d,%d,%d,%s\n",
+                    thue.MaTro, thue.HoTenKT, thue.Diachitro, thue.SDTKT,
+                    thue.Dien, thue.Nuoc, thue.DichVu, thue.TienPhong,
+                    thue.TongTien, thue.TrangThai);
+        }
+        else
+        {
+            foundThue = 1;
+        }
+    }
+    fclose(fileThue);
+    fclose(tempThue);
+    if (foundThue)
+    {
+        remove("Thue.txt");
+        rename("TempThue.txt", "Thue.txt");
+        printf("Xoa ma tro %s trong file Thue.txt thanh cong!\n", maTro);
+    }
+    else
+    {
+        remove("TempThue.txt");
+    }
+    FILE *fileTrong = fopen("Trong.txt", "r");
+    FILE *tempTrong = fopen("TempTrong.txt", "w");
+    if (fileTrong == NULL || tempTrong == NULL)
+    {
+        printf("Loi mo file Trong.txt hoac file tam.\n");
+        if (fileTrong)
+            fclose(fileTrong);
+        if (tempTrong)
+            fclose(tempTrong);
+        return;
+    }
+    int foundTrong = 0;
+    Trong trong;
+    while (fscanf(fileTrong, "%[^,],%[^,],%[^,],%[^,],%d,%d,%d,%d,%[^\n]\n",
+                  trong.MaTro, trong.HoTenCT, trong.Diachitro, trong.SDTCT,
+                  &trong.DienSo, &trong.NuocSo, &trong.DichVuThang,
+                  &trong.TienPhong, trong.TrangThai) == 9)
+    {
+        if (strcmp(trong.MaTro, maTro) != 0)
+        {
+            fprintf(tempTrong, "%s,%s,%s,%s,%d,%d,%d,%d,%s\n",
+                    trong.MaTro, trong.HoTenCT, trong.Diachitro, trong.SDTCT,
+                    trong.DienSo, trong.NuocSo, trong.DichVuThang,
+                    trong.TienPhong, trong.TrangThai);
+        }
+        else
+        {
+            foundTrong = 1;
+        }
+    }
+    fclose(fileTrong);
+    fclose(tempTrong);
+    if (foundTrong)
+    {
+        remove("Trong.txt");
+        rename("TempTrong.txt", "Trong.txt");
+        printf("Xoa ma tro %s trong file Trong.txt thanh cong!\n", maTro);
+    }
+    else
+    {
+        remove("TempTrong.txt");
+    }
+    if (!foundThue && !foundTrong)
+    {
+        printf("Khong tim thay ma tro %s trong ca hai file.\n", maTro);
+    }
+}
+
+void ThemThongBao()
+{
+    FILE *file = fopen("Thongbao.txt", "a");
+    if (file == NULL)
+    {
+        printf("Khong the mo file thongbao.txt!\n");
+        return;
+    }
+    ThongBao tb;
+    system("cls"); // Xóa màn hình, có thể bỏ nếu không cần thiết
+    fflush(stdin);
+    // Nhập nội dung thông báo
+    printf("Nhap noi dung thong bao: ");
+    fgets(tb.NoiDung, sizeof(tb.NoiDung), stdin);
+    // Nhập ngày tháng
+    do
+    {
+        printf("\nNhap ngay thong bao (DD/MM/YYYY): ");
+        fgets(tb.Ngay, sizeof(tb.Ngay), stdin);
+        // Xóa ký tự newline nếu có sau khi nhập ngày
+        if (tb.Ngay[strlen(tb.Ngay) - 1] == '\n')
+        {
+            tb.Ngay[strlen(tb.Ngay) - 1] = '\0';
+        }
+    } // Kiểm tra ngày có hợp lệ hay không (Đây là kiểm tra đơn giản)
+    while (strlen(tb.Ngay) != 10 || tb.Ngay[2] != '/' || tb.Ngay[5] != '/');
+
+    // Lưu thông báo vào file
+    fprintf(file, "%s\n%s\n", tb.Ngay, tb.NoiDung);
+    fclose(file);
+
+    printf("Thong bao da duoc luu vao file.\n");
+}
+void XemThongBao()
+{
+    FILE *file = fopen("Thongbao.txt", "r");
+    if (file == NULL)
+    {
+        printf("Khong co thong bao nao.\n");
+        return;
+    }
+    ThongBao tb;
+    system("cls");
+    printf("THONG BAO CHO KHACH THUE\n");
+    printf("==========================\n");
+    while (fscanf(file, "%s\n%[^\n]", tb.Ngay, tb.NoiDung) != EOF)
+    {
+        printf("Ngay: %s\n", tb.Ngay);
+        printf("Noi dung: %s\n", tb.NoiDung);
+        printf("------------------------\n");
+    }
+    fclose(file);
+}
+void HoaDon(Thue *head)
+{
+    char maTro[15];
+    printf("Nhap ma phonng cua ban: ");
+    fflush(stdin);
+    gets(maTro);
+    maTro[strcspn(maTro, "\n")] = '\0';
+    Thue *current = head;
+    while (current != NULL)
+    {
+        if (strcmp(current->MaTro, maTro) == 0)
+        {
+            // Nếu mã trọ tìm thấy
+            hieuung("HOA DON THANH TOAN THANG NAY:");
+            printf("-------------------------------");
+            gotoxy(2, 3);
+            printf("Ma Tro: %s", current->MaTro);
+            gotoxy(0, 4);
+            printf("|-------------------------------------------------------------------------------------");
+            gotoxy(0, 3);
+            printf("|");
+            gotoxy(0, 5);
+            printf("|");
+            gotoxy(0, 6);
+            printf("|");
+            gotoxy(2, 5);
+            printf("|Tien Dien");
+            gotoxy(18, 5);
+            printf("|Tien Nuoc");
+            gotoxy(34, 5);
+            printf("|Tien Dich Vu");
+            gotoxy(52, 5);
+            printf("|Tien Phong");
+            gotoxy(69, 5);
+            printf("|Tong Tien");
+            gotoxy(2, 6);
+            printf("|%d VND", current->Dien);
+            gotoxy(18, 6);
+            printf("|%d VND", current->Nuoc);
+            gotoxy(34, 6);
+            printf("|%d VND", current->DichVu);
+            gotoxy(52, 6);
+            printf("|%d VND", current->TienPhong);
+            gotoxy(69, 6);
+            printf("|%d VND", current->TongTien);
+            gotoxy(0, 7);
+            printf("|-------------------------------------------------------------------------------------");
+            printf("\n---YEU CAU THANH TOAN---");
+            return;
+        }
+        current = current->next;
+    }
+
+    // Nếu không tìm thấy mã trọ
+    printf("Khong tim thay phong voi ma tro: %s\n", maTro);
+}
+void login(int *role)
+{
+    char tk[50];
+    char mk[50];
+dangnhap:
+    system("cls");
+    printf("====================================\n");
+    printf("             Dang Nhap\n");
+    printf("====================================");
+    fflush(stdin);
+    printf("\nNhap ten dang nhap: ");
+    fgets(tk, sizeof(tk), stdin);
+    tk[strcspn(tk, "\n")] = '\0';
+    printf("\nNhap mat khau: ");
+    fgets(mk, sizeof(mk), stdin);
+    mk[strcspn(mk, "\n")] = '\0';
+    if (Check(tk, mk, role) != 1)
+    {
+        system("cls");
+        hieuung("ban da nhap sai mat khau hoac tai khoan");
+        hieuung("---------------------------------------");
+        goto dangnhap;
+    }
+}
+void cautruc()
+{
+    TKMK *head = NULL;
+    int choice, role, luachon;
+    char maTro[15];
+    Trong *danhSachTrong = docDanhSachTrong();
+    Thue *danhSachThue = docDanhSachThue();
+mainmenu:
+    mainMenu();
+    fflush(stdin);
+    scanf("%d", &luachon);
+    switch (luachon)
+    {
+    case 1:
+        system("cls");
+        dangKyTaiKhoan(&head);
+        goto login;
+        break;
+    case 2:
+    login:
+        login(&role);
+        system("cls");
+        printf("---------------*---------------\n");
+        printf("Ban da dang nhap thanh cong!\n");
+        hieuung("------------loading------------>");
+        switch (role)
+        {
+        case 1:
+        Menu:
+            system("cls");
+            printf("\nQuyen: Dang la nguoi dung binh thuong!\n");
+            KTMenu();
+            fflush(stdin);
+            scanf("%d", &choice);
+            if (choice == 0)
+            {
+                system("cls");
+                goto mainmenu;
+            };
+            switch (choice)
+            {
+            case 1:
+                system("cls");
+                InTrong(danhSachTrong);
+                do
+                {
+                    printf("\nNhap 0 de quay lai : ");
+                    scanf("%d", &choice);
+                } while (choice != 0);
+                goto Menu;
+                break;
+            case 2:
+                system("cls");
+                TimPhong(danhSachThue);
+                do
+                {
+                    printf("\nNhap 0 de quay lai menu: ");
+                    scanf("%d", &choice);
+                } while (choice != 0);
+                goto Menu;
+                break;
+            case 3:
+                system("cls");
+                GuiPhanHoi(danhSachTrong, danhSachThue);
+                do
+                {
+                    printf("\nNhap 0 de quay lai menu: ");
+                    scanf("%d", &choice);
+                } while (choice != 0);
+                goto Menu;
+                break;
+            case 4:
+                system("cls");
+                XemThongBao();
+                do
+                {
+                    printf("\nNhap 0 de quay lai menu: ");
+                    scanf("%d", &choice);
+                } while (choice != 0);
+                goto Menu;
+                break;
+            case 5:
+                system("cls");
+                HoaDon(danhSachThue);
+                do
+                {
+                    printf("\nNhap 0 de quay lai menu: ");
+                    scanf("%d", &choice);
+                } while (choice != 0);
+                goto Menu;
+                break;
+            default:
+                printf("Lua chon khong hop le.\n");
+                hieuung("------------loading------------");
+            }
+        case 2:
+            do
+            {
+            Menu2:
+                system("cls");
+                printf("Quyen: Dang la Nguoi quan ly!\n");
+                ADMenu();
+                scanf("%d", &choice);
+                switch (choice)
+                {
+                case 1:
+                    system("cls");
+                    TPMenu();
+                    scanf("%d", &choice);
+                    switch (choice)
+                    {
+                    case 1:
+                        system("cls");
+                        printf("=== Nhap danh sach phong trong ===\n");
+                        danhSachTrong = nhapDanhSachTrong(danhSachTrong, danhSachThue);
+                        ghiDanhSachTrongVaoFile(danhSachTrong);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    case 2:
+                        system("cls");
+                        printf("=== Nhap danh sach phong thue ===\n");
+                        danhSachThue = nhapDanhSachThue(danhSachThue, danhSachTrong);
+                        ghiDanhSachThueVaoFile(danhSachThue);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    default:
+                        goto Menu2;
+                    }
+
+                case 2:
+                    system("cls");
+                    InMenu();
+                    scanf("%d", &choice);
+                    switch (choice)
+                    {
+                    case 1:
+                        system("cls");
+                        InTrong(danhSachTrong);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    case 2:
+                        system("cls");
+                        InThue(danhSachThue);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    default:
+                        goto Menu2;
+                    }
+                case 3:
+                    system("cls");
+                    TimPMenu();
+                    scanf("%d", &choice);
+                    switch (choice)
+                    {
+                    case 1:
+                        system("cls");
+                        TimPhongTrong(danhSachTrong);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    case 2:
+                        system("cls");
+                        TimPhong(danhSachThue);
+                        do
+                        {
+                            printf("\nNhap 0 de quay lai menu: ");
+                            scanf("%d", &choice);
+                        } while (choice != 0);
+                        goto Menu2;
+                        break;
+                    default:
+                        goto Menu2;
+                    }
+                case 4:
+                    system("cls");
+                    printf("Nhap ma tro can xoa: ");
+                    fflush(stdin);
+                    gets(maTro);
+                    XoaMaTro(maTro);
+                    do
+                    {
+                        printf("\nNhap 0 de quay ve Menu: ");
+                        scanf("%d", &choice);
+                    } while (choice != 0);
+                    goto Menu2;
+                    break;
+                case 5:
+                    system("cls");
+                    ThemThongBao();
+                    do
+                    {
+                        printf("\nNhap 0 de quay ve Menu: ");
+                        scanf("%d", &choice);
+                    } while (choice != 0);
+                    goto Menu2;
+                    break;
+                case 6:
+                    system("cls");
+                    XemPhanHoi();
+                    do
+                    {
+                        printf("\nNhap 0 de quay ve Menu: ");
+                        scanf("%d", &choice);
+                    } while (choice != 0);
+                    goto Menu2;
+                case 0:
+                    system("cls");
+                    goto mainmenu;
+                    break;
+                default:
+                    printf("Lua chon khong hop le.\n");
+                    hieuung("------------loading------------");
+                    break;
+                }
+            } while (choice != 0);
+        }
+    case 0:
+        system("cls");
+        printf("------------Tam biet-------------");
+    default:
+        printf("Lua chon khong hop le.\n");
+        hieuung("------------loading------------");
+        system("cls");
+        goto mainmenu;
+        break;
+    }
+}
+int main()
+{
+    maximizeConsole();
+    Trangtt();
+    getch();
+    system("cls");
+    cautruc();
+}
