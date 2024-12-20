@@ -492,3 +492,82 @@ void ghiDanhSachTrongVaoFile(Trong *head)
     rename("Trong_temp.txt", "Trong.txt"); // Đổi tên file tạm thành file gốc
     printf("Ghi danh sach trong thanh cong vao file Trong.txt.\n");
 }
+// Danh Sach Menu
+void mainMenu()
+{
+    printf("\n===== DANG NHAP VAO HE THONG =====\n");
+    printf("----------------***-----------------\n");
+    printf("1. DANG KY TAI KHOAN \n");
+    printf("2. DANG NHAP \n");
+    printf("0. Thoat\n");
+    printf("Lua chon cua ban: ");
+}
+void ADMenu()
+{
+    printf("====================================\n");
+    printf("                MENU\n");
+    printf("====================================\n");
+    printf("1. Them danh sach phong tro\n");
+    printf("2. Xem danh sach phong tro\n");
+    printf("3. Tim phong tro\n");
+    printf("4. Xoa phong tro\n");
+    printf("5. Them thong bao\n");
+    printf("6. Xem phan hoi\n");
+    printf("0. Thoat\n");
+    printf("Chon tuy chon cua ban (0-6): ");
+}
+void Trangtt()
+{
+    hieuung("\nThong tin, gioi thieu: ");
+    hieuung("\nDay la mot chuong trinh cua nhom gom 4 thanh vien: ");
+    hieuung("\n* Mai Van Truong (26A4041674) ");
+    hieuung("\n* Phan Quang Huy (26A4041190)");
+    hieuung("\n* Dang Truong Duy (26A4040718)");
+    hieuung("\n* Ngo Quang Manh (26A4041645)");
+    hieuung("\nChao mung ban den voi he thong quan ly phong tro!");
+    printf("\n-----------------------------------------------------\n");
+}
+void TPMenu()
+{
+    printf("====================================\n");
+    printf("             Them Tro\n");
+    printf("====================================\n");
+    printf("1. Them tro trong.\n");
+    printf("2. Them tro Thue.\n");
+    printf("0. Quay lai Menu.\n");
+    printf("Chon tuy chon cua ban (0-2): ");
+}
+void InMenu()
+{
+    printf("====================================\n");
+    printf("             In DS_Tro\n");
+    printf("====================================\n");
+    printf("1. In Tro trong.\n");
+    printf("2. In Tro Thue.\n");
+    printf("0. Quay lai Menu.\n");
+    printf("Chon tuy chon cua ban (0-2): ");
+}
+void TimPMenu()
+{
+    printf("====================================\n");
+    printf("               Tim Tro\n");
+    printf("====================================\n");
+    printf("1. Tim Tro trong.\n");
+    printf("2. Tim Tro Thue.\n");
+    printf("0. Quay lai Menu.\n");
+    printf("Chon tuy chon cua ban (0-2): ");
+}
+void KTMenu()
+{
+    printf("====================================\n");
+    printf("                 MENU\n");
+    printf("====================================\n");
+    // XemThongBao();
+    printf("1. Xem thong tin phong tro trong\n");
+    printf("2. Tim thong tin phong tro cua ban\n");
+    printf("3. Gui phan hoi\n");
+    printf("4. Xem thong bao\n");
+    printf("5. Xem Hoa Don \n");
+    printf("0. Thoat\n");
+    printf("Chon tuy chon cua ban (0-5): ");
+}
