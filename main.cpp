@@ -571,3 +571,202 @@ void KTMenu()
     printf("0. Thoat\n");
     printf("Chon tuy chon cua ban (0-5): ");
 }
+void TimPhong(Thue *head)
+{
+    char maTro[15];
+    printf("Nhap ma phong cua ban: ");
+    fflush(stdin);
+    gets(maTro);
+    maTro[strcspn(maTro, "\n")] = '\0';
+    Thue *current = head;
+    int i = 1;
+    while (current != NULL)
+    {
+        if (strcmp(current->MaTro, maTro) == 0)
+        {
+            // Nếu mã trọ tìm thấy
+            gotoxy(2, 1);
+            hieuung("\nThong tin phong tro:\n");
+            gotoxy(2, 3);
+            printf("Ma phong");
+            gotoxy(13, 3);
+            printf("Ho ten khach thue");
+            gotoxy(35, 3);
+            printf("Dia chi tro");
+            gotoxy(50, 3);
+            printf("SDT");
+            gotoxy(63, 3);
+            printf("Tien dien");
+            gotoxy(77, 3);
+            printf("Tien nuoc");
+            gotoxy(92, 3);
+            printf("Tien dich vu");
+            gotoxy(110, 3);
+            printf("Tien Phong");
+            gotoxy(130, 3);
+            printf("Tong tien");
+            gotoxy(149, 3);
+            printf("Trang thai");
+            gotoxy(2, i + 3);
+            printf("%s", current->MaTro);
+            gotoxy(13, i + 3);
+            printf("%s", current->HoTenKT);
+            gotoxy(35, i + 3);
+            printf("%s", current->Diachitro);
+            gotoxy(50, i + 3);
+            printf("%s", current->SDTKT);
+            gotoxy(63, i + 3);
+            printf("%d VND", current->Dien);
+            gotoxy(77, i + 3);
+            printf("%d VND", current->Nuoc);
+            gotoxy(92, i + 3);
+            printf("%d VND", current->DichVu);
+            gotoxy(110, i + 3);
+            printf("%d VND", current->TienPhong);
+            gotoxy(130, i + 3);
+            printf("%d VND", current->TongTien);
+            gotoxy(149, i + 3);
+            printf("%s", current->TrangThai);
+            return;
+        }
+        current = current->next;
+    }
+
+    // Nếu không tìm thấy mã trọ
+    printf("Khong tim thay phong voi ma tro: %s\n", maTro);
+}
+void TimPhongTrong(Trong *head)
+{
+    char maTro[15];
+    printf("Nhap ma phong can tim: ");
+    fflush(stdin);
+    gets(maTro);
+    maTro[strcspn(maTro, "\n")] = '\0'; // Xóa ký tự xuống dòng nếu có
+
+    Trong *current = head;
+    while (current != NULL)
+    {
+        if (strcmp(current->MaTro, maTro) == 0)
+        {
+            if (strcmp(current->TrangThai, "Trong") == 0)
+            {
+                // Nếu tìm thấy phòng trống
+                gotoxy(2, 1);
+                printf("Thong tin phong tro:");
+                gotoxy(2, 3);
+                hieuung("-------------------------------");
+                gotoxy(2, 5);
+                printf("Ma phong");
+                gotoxy(13, 5);
+                printf("Ho ten khach thue");
+                gotoxy(35, 5);
+                printf("Dia chi tro");
+                gotoxy(50, 5);
+                printf("SDT");
+                gotoxy(63, 5);
+                printf("Tien dien");
+                gotoxy(77, 5);
+                printf("Tien nuoc");
+                gotoxy(92, 5);
+                printf("Tien dich vu");
+                gotoxy(110, 5);
+                printf("Tien Phong");
+                gotoxy(130, 5);
+                printf("Tong tien");
+                gotoxy(149, 5);
+                printf("Trang thai");
+                gotoxy(2, 6);
+                printf("%s\n", current->MaTro);
+                gotoxy(13, 6);
+                printf("%s\n", current->HoTenCT);
+                gotoxy(35, 6);
+                printf("Dia chi: %s\n", current->Diachitro);
+                gotoxy(50, 6);
+                printf("%s\n", current->SDTCT);
+                gotoxy(63, 6);
+                printf("%d VND\n", current->DienSo);
+                gotoxy(77, 6);
+                printf("%d\ VND\n", current->NuocSo);
+                gotoxy(92, 6);
+                printf("%d VND\n", current->DichVuThang);
+                gotoxy(110, 6);
+                printf("%d VND\n", current->TienPhong);
+                gotoxy(149, 6);
+                printf("%s\n", current->TrangThai);
+                return;
+            }
+            else
+            {
+                // Nếu phòng không ở trạng thái trống
+                printf("Phong co ma tro: %s khong trong trang thai trong!\n", maTro);
+                return;
+            }
+        }
+        current = current->next;
+    }
+
+    // Nếu không tìm thấy mã trọ
+    printf("Khong tim thay phong voi ma tro: %s\n", maTro);
+}
+void GuiPhanHoi(Trong *headTrong, Thue *headThue)
+{
+    FILE *file = fopen("PhanHoi.txt", "a");
+    if (file == NULL)
+    {
+        printf("Khong the mo file PhanHoi.txt!\n");
+        return;
+    }
+    PhanHoi ph;
+    char maTro[15];
+    int found = 0;
+    system("cls");
+    while (1)
+    {
+        printf("Nhap Ma tro cua ban: ");
+        fflush(stdin);
+        gets(ph.MaTro);
+        ph.MaTro[strcspn(ph.MaTro, "\n")] = '\0';
+        if (kiemTraMaTroTonTai(headThue, headTrong, ph.MaTro) == 0)
+        {
+            printf("Ma Tro Khong ton tai! Vui long nhap lai.\n");
+        }
+        else
+        {
+            break;
+        }
+    }
+    printf("Nhap ten cua ban: ");
+    fgets(ph.HoTenKT, sizeof(ph.HoTenKT), stdin);
+    ph.HoTenKT[strcspn(ph.HoTenKT, "\n")] = '\0';
+    printf("Nhap SDT: ");
+    fgets(ph.SDTKT, sizeof(ph.SDTKT), stdin);
+    ph.SDTKT[strcspn(ph.SDTKT, "\n")] = '\0';
+    printf("Nhap noi dung phan hoi: ");
+    fgets(ph.PhanHoi, sizeof(ph.PhanHoi), stdin);
+    ph.PhanHoi[strcspn(ph.PhanHoi, "\n")] = '\0';
+    fprintf(file, "%s,%s,%s,%s\n", ph.MaTro, ph.HoTenKT, ph.SDTKT, ph.PhanHoi);
+    fclose(file);
+    printf("Phan hoi da duoc gui thanh cong!\n");
+}
+void XemPhanHoi()
+{
+    FILE *file = fopen("PhanHoi.txt", "r");
+    if (file == NULL)
+    {
+        printf("Khong co phan hoi nao.\n");
+        return;
+    }
+    PhanHoi ph;
+    system("cls");
+    printf("DANH SACH PHAN HOI\n");
+    printf("====================\n");
+    while (fscanf(file, "%[^,],%[^,],%[^,],%[^\n]\n", ph.MaTro, ph.HoTenKT, ph.SDTKT, ph.PhanHoi) == 4)
+    {
+        printf("Ma Tro: %s\n", ph.MaTro);
+        printf("Khach Thue: %s\n", ph.HoTenKT);
+        printf("SDT: %s\n", ph.SDTKT);
+        printf("Phan Hoi: %s\n", ph.PhanHoi);
+        printf("------------------------\n");
+    }
+    fclose(file);
+}
