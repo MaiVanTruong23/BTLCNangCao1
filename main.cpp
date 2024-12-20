@@ -361,3 +361,134 @@ void ghiDanhSachTrongVaoFile(Trong *head)
     rename("Trong_temp.txt", "Trong.txt"); // Đổi tên file tạm thành file gốc
     printf("Ghi danh sach trong thanh cong vao file Trong.txt.\n");
 }
+// Ham tao danh sach lien ket
+Thue *themThue(Thue *head, Thue data)
+{
+    Thue *newNode = (Thue *)malloc(sizeof(Thue));
+    if (newNode == NULL)
+    {
+        printf("Khong the mo file!");
+        return head;
+    }
+
+    *newNode = data;
+    newNode->next = NULL;
+
+    if (head == NULL)
+    {
+        return newNode;
+    }
+
+    Thue *current = head;
+    while (current->next != NULL)
+    {
+        current = current->next;
+    }
+    current->next = newNode;
+    return head;
+}
+Trong *themTrong(Trong *head, Trong data)
+{
+    Trong *newNode = (Trong *)malloc(sizeof(Trong));
+    if (newNode == NULL)
+    {
+        printf("Khong the mo file!");
+        return head;
+    }
+
+    *newNode = data;
+    newNode->next = NULL;
+
+    if (head == NULL)
+    {
+        return newNode;
+    }
+
+    Trong *current = head;
+    while (current->next != NULL)
+    {
+        current = current->next;
+    }
+    current->next = newNode;
+    return head;
+}
+
+// Cac Ham ghi va luu vo file
+void ghiDanhSachThueVaoFile(Thue *head)
+{
+    FILE *tempFile = fopen("Thue_temp.txt", "w"); // Mở file tạm để ghi
+    if (tempFile == NULL)
+    {
+        printf("Khong the mo file tam de ghi!\n");
+        return;
+    }
+
+    Thue *current = head;
+    while (current != NULL)
+    {
+        fprintf(tempFile, "%s,%s,%s,%s,%d,%d,%d,%d,%d,%s\n",
+                current->MaTro,
+                current->HoTenKT,
+                current->Diachitro,
+                current->SDTKT,
+                current->Dien,
+                current->Nuoc,
+                current->DichVu,
+                current->TienPhong,
+                current->TongTien, // Tổng tiền được ghi
+                current->TrangThai);
+        current = current->next;
+    }
+
+    fclose(tempFile);
+
+    // Thay thế file cũ bằng file tạm
+    if (remove("Thue.txt") == 0)
+    { // Xóa file gốc
+        if (rename("Thue_temp.txt", "Thue.txt") == 0)
+        { // Đổi tên file tạm thành file gốc
+            printf("Ghi danh sach thue thanh cong vao file Thue.txt.\n");
+        }
+        else
+        {
+            printf("Khong the doi ten file tam thanh file Thue.txt!\n");
+        }
+    }
+    else
+    {
+        printf("Khong the xoa file Thue.txt cu!\n");
+    }
+}
+
+void ghiDanhSachTrongVaoFile(Trong *head)
+{
+    FILE *tempFile = fopen("Trong_temp.txt", "w"); // Mở file tạm
+    if (tempFile == NULL)
+    {
+        printf("Khong the mo file tam de ghi!\n");
+        return;
+    }
+
+    Trong *current = head;
+    while (current != NULL)
+    {
+        fprintf(tempFile, "%s,%s,%s,%s,%d,%d,%d,%d,%s\n",
+                current->MaTro,
+                current->HoTenCT,
+                current->Diachitro,
+                current->SDTCT,
+                current->DienSo,
+                current->NuocSo,
+                current->DichVuThang,
+                current->TienPhong,
+                current->TrangThai);
+        current = current->next;
+    }
+
+    fclose(tempFile);
+
+    // Thay thế file gốc bằng file tạm
+    remove("Trong.txt");                   // Xóa file gốc
+    rename("Trong_temp.txt", "Trong.txt"); // Đổi tên file tạm thành file gốc
+    printf("Ghi danh sach trong thanh cong vao file Trong.txt.\n");
+}
